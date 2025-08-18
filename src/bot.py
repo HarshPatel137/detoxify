@@ -1,3 +1,20 @@
+"""
+Bot entrypoint & event wiring.
+
+what?:
+  - Configures intents & Client, syncs the slash-command tree, sets presence.
+  - Listens for messages; runs fast local scoring; if flagged → shows a private
+    heads-up panel to the author with actions (Why/Delete/Breathe/Blackjack).
+
+why?:
+  - Keeps Discord plumbing isolated from scoring & UI so those parts can evolve
+    independently (swap model, change UI) without touching the event loop.
+
+KEY IDEAS:
+  - privacy-first (no uploads), instant cold-start, ephemeral moderation (no public shaming)
+  - rate-limit scoring to avoid reprocessing every keystroke on busy channels
+"""
+
 import asyncio, time, random, discord
 from typing import Dict, List, Tuple
 from discord.ext import commands, tasks

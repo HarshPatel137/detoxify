@@ -1,4 +1,14 @@
-\
+"""
+Normalization & tokenization helpers.
+
+WHAT:
+  - lowercasing, whitespace collapse, strip URLs/mentions, gentle punctuation,
+    token list + join helpers used in scoring.
+
+WHY:
+  - Reduces false negatives; keeps model code clean and testable.
+"""
+
 import re
 URL_RE = re.compile(r"https?://\S+")
 MENTION_RE = re.compile(r"@\w+|<@!?[\d]+>")

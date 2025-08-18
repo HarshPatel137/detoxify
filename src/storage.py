@@ -1,3 +1,6 @@
+"""Lightweight persistence for recent scores and CSV export. 
+Stores only aggregates/metrics—never full message content."""
+
 import os, sqlite3, json, time
 from typing import Dict
 

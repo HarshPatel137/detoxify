@@ -1,3 +1,15 @@
+"""
+HurtLex TSV → in-memory structures.
+
+what?:
+  - Parse/normalize lemmas & phrases, split by category.
+  - Build fast lookup tables for always-flag vs weighted categories.
+
+why?:
+  - Keeps raw TSV handling out of the hot path; runtime only touches small dicts.
+"""
+
+
 import json, os, re
 from typing import Dict, List, Tuple, Set
 

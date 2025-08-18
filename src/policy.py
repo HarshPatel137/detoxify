@@ -1,3 +1,6 @@
+"""Stores default and per-channel thresholds and resolves overrides. 
+Simple JSON persistence so servers can tune behavior safely."""
+
 from typing import Dict
 from .storage import get_threshold
 DEFAULTS={'toxicity':0.50,'severe_toxicity':0.40,'insult':0.45,'threat':0.35,'obscene':0.45,'identity_attack':0.35}

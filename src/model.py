@@ -1,3 +1,7 @@
+"""Scores text using the HurtLex lexicon plus simple heuristics (threats/stereotypes) 
+and returns toxicity-style labels. Fast, deterministic, 
+and privacy-first (no external services)."""
+
 from typing import Dict
 import os, re, math
 

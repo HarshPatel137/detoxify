@@ -1,0 +1,28 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip
+      - run: pip install -r requirements.txt
+      # tiny dummy model so imports succeed in CI
+      - run: |
+          mkdir -p models
+          python - <<'PY'
+          import json
+          json.dump({"weights":{"dummy":1.0},"categories":{"dummy":["PS"]}},
+                    open("models/hurtlex_model.json","w"))
+          PY
+      - run: python -m compileall -q src
+      - name: Smoke test
+        run: |
+          python - <<'PY'
+          from src.model import score
+          print("OK ->", score("Have a nice day"))
+          print("Threat ->", score("I will kill you"))
+          PY

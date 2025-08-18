@@ -179,3 +179,13 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+.env
+.env.local
+models/hurtlex_model.json
+models/*.joblib
+models/*.pt
+models/*.bin
+models/*.onnx
+*.log
+*.sqlite*

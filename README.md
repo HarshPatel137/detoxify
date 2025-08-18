@@ -18,14 +18,13 @@ A lightweight **Discord bot** that nudges conversations toward civility.
 
 **Private heads-up (only you see it)**  
 [![Watch heads-up demo](docs/thumb-headsup.png)](docs/demo-heads-up.mp4?raw=1)  
-[▶️ Open MP4](docs/demo-heads-up.mp4?raw=1)
+https://github.com/user-attachments/assets/f2dea24c-3b74-4da8-8694-712f5439ffa2
 
 _Explains why a message was flagged, offers Delete / Breathing / Blackjack cool-down._
 
 **Slash commands**  
 [![Watch commands demo](docs/thumb-commands.png)](docs/demo-commands.mp4?raw=1)  
-[▶️ Open MP4](docs/demo-commands.mp4?raw=1)
-
+https://github.com/user-attachments/assets/9f097abc-fb8c-4e52-a47c-6c6962297fcf
 `/toxicity status` shows a civility meter & CSV; `/toxicity policy` edits per-channel thresholds.
 
 ## Quickstart

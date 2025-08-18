@@ -14,15 +14,6 @@ A lightweight **Discord bot** that nudges conversations toward civility.
 - Private heads-up tools: *Why flagged, Delete, Breathing, Blackjack*
 - Slash commands: `/toxicity status`, `/toxicity policy`, `/blackjack`
 
-## Quickstart
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-scripts/build_model.sh /path/to/hurtlex_EN.tsv
-cp .env.example .env   # paste your token
-python -m src.bot
-
 ## Demos
 
 **Private heads-up (only the author sees it)**
@@ -32,3 +23,12 @@ python -m src.bot
 **Slash commands**
 <video src="docs/demo-commands.mov" controls muted playsinline width="720"></video>
 <br/><sub>`/toxicity status` shows a civility meter & CSV; `/toxicity policy` edits per-channel thresholds.</sub>
+
+## Quickstart
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+scripts/build_model.sh /path/to/hurtlex_EN.tsv
+cp .env.example .env   # paste your token
+python -m src.bot

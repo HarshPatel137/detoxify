@@ -241,6 +241,7 @@ class HeadsUpPanel(discord.ui.View):
         self.msg_id = original_message_id
         self.chan_id = channel_id
         self.explain = explain_text
+        self._cancelled = False  # cancel flag to stop breathing immediately on Close
 
     async def _guard(self, inter: discord.Interaction) -> bool:
         if inter.user.id != self.author_id:
@@ -249,7 +250,12 @@ class HeadsUpPanel(discord.ui.View):
         return True
 
     async def _edit(self, inter: discord.Interaction, *, embed=None, view=None):
-        await inter.response.defer(ephemeral=True, thinking=False)
+        if self._cancelled:
+            return  # ignore late edits after Close
+        try:
+            await inter.response.defer(ephemeral=True, thinking=False)
+        except Exception:
+            pass
         await inter.followup.edit_message(message_id=self.root_id, embed=embed, view=view)
 
     @discord.ui.button(label="Why flagged?", emoji="🔎", style=discord.ButtonStyle.secondary)
@@ -288,24 +294,51 @@ class HeadsUpPanel(discord.ui.View):
 
     @discord.ui.button(label="Start 60s Box Breathing", emoji="🫁", style=discord.ButtonStyle.success)
     async def breathing(self, inter: discord.Interaction, _):
+        """Very simple cycle: Inhale 4s → Hold 4s → Exhale 4s (repeats; cancel-safe)."""
         if not await self._guard(inter):
             return
-        phases = [("Inhale 4", 4), ("Hold 4", 4), ("Exhale 4", 4), ("Hold 4", 4)]
-        total = 0
-        while total < 60:
-            for text, sec in phases:
-                total += sec
-                await self._edit(
-                    inter,
+        try:
+            await inter.response.defer(ephemeral=True, thinking=False)
+        except Exception:
+            pass
+
+        async def show(phase: str, seconds: int, color: int):
+            for t in range(seconds, 0, -1):
+                if self._cancelled:
+                    return
+                emb = discord.Embed(
+                    title="Box Breathing",
+                    description=f"**{phase}** · {t}s",
+                    color=color,
+                )
+                emb.set_footer(text="Inhale 4s → Hold 4s → Exhale 4s")
+                try:
+                    await inter.followup.edit_message(message_id=self.root_id, embed=emb, view=self)
+                except discord.NotFound:
+                    return
+                await asyncio.sleep(1)
+
+        # Do four simple cycles (~48s total). Close button can cancel any time.
+        for _ in range(4):
+            await show("Inhale", 4, COLOR_INFO)
+            await show("Hold",   4, COLOR_WARN)
+            await show("Exhale", 4, COLOR_OK)
+            if self._cancelled:
+                return
+
+        if not self._cancelled:
+            try:
+                await inter.followup.edit_message(
+                    message_id=self.root_id,
                     embed=discord.Embed(
-                        title="Take a breath", description=f"🫁 **Box breathing**: {text}  ({total}s/60s)", color=COLOR_INFO
+                        title="Done",
+                        description="Nice reset. 🌿",
+                        color=COLOR_OK,
                     ),
                     view=self,
                 )
-                await asyncio.sleep(sec)
-        await self._edit(
-            inter, embed=discord.Embed(title="Nice reset", description="✅ Done — you can continue or close.", color=COLOR_OK), view=self
-        )
+            except discord.NotFound:
+                pass
 
     @discord.ui.button(label="Play Blackjack", emoji="🃏", style=discord.ButtonStyle.primary)
     async def blackjack(self, inter: discord.Interaction, _):
@@ -318,11 +351,21 @@ class HeadsUpPanel(discord.ui.View):
     async def close(self, inter: discord.Interaction, _):
         if not await self._guard(inter):
             return
-        await inter.response.defer(ephemeral=True, thinking=False)
+        self._cancelled = True  # stop any ongoing breathing updates
         try:
-            await inter.followup.delete_message(message_id=self.root_id)
+            await inter.response.defer(ephemeral=True, thinking=False)
         except Exception:
-            await inter.followup.edit_message(message_id=self.root_id, content="Heads-up dismissed. Take care ✨", embed=None, view=None)
+            pass
+        try:
+            await inter.followup.edit_message(
+                message_id=self.root_id,
+                content="Heads-up dismissed. Take care ✨",
+                embed=None,
+                view=None,
+            )
+        except Exception:
+            pass
+        self.stop()  # disable further interactions
 
 
 class OpenPanelStub(discord.ui.View):

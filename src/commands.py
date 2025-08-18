@@ -4,7 +4,6 @@ Slash-command layer (presentation only).
 what?:
   - /toxicity status  → shows personal civility meter + recent stats (ephemeral)
   - /toxicity policy  → view/set thresholds with safe defaults (per-channel overrides)
-  - /blackjack        → quick cool-down mini-game (ephemeral)
 """
 
 import io, discord

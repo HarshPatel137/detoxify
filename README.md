@@ -1,6 +1,4 @@
 # Toxicity Coach (Lite)
-
-[![build](https://img.shields.io/github/actions/workflow/status/<HarshPatel137>/<toxicity-coach>/ci.yml?label=CI)](https://github.com/<HarshPatel137>/<toxicity-coach>/actions)
 ![python](https://img.shields.io/badge/Python-3.10%2B-3B82F6)
 ![license](https://img.shields.io/badge/License-MIT-green)
 
